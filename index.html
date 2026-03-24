@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atividade de Ciências - 1º Bimestre</title>
+    <style>
+        :root {
+            --primary-color: #1a2a6c;
+            --secondary-color: #b21f1f;
+            --accent-color: #fdbb2d;
+            --bg-color: #f8f9fa;
+            --text-color: #212529;
+            --white: #ffffff;
+            --border-color: #dee2e6;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Georgia', serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.8;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--white);
+            padding: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-radius: 12px;
+        }
+        header {
+            text-align: center;
+            border-bottom: 3px double var(--primary-color);
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+        }
+        header h1 {
+            margin: 5px 0;
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        header h2 {
+            margin: 5px 0;
+            font-size: 1.4rem;
+            color: var(--secondary-color);
+            font-weight: normal;
+        }
+        /* ── PAINEL DO ALUNO ── */
+        .student-panel {
+            background: #eef2ff;
+            border: 2px solid var(--primary-color);
+            border-radius: 10px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            font-family: sans-serif;
+        }
+        .student-panel h3 {
+            margin: 0 0 15px 0;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--primary-color);
+        }
+        .fields-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: flex-end;
+        }
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .field-group label {
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .field-group select,
+        .field-group input[type="text"] {
+            padding: 10px 14px;
+            border-radius: 6px;
+            border: 2px solid #aab0d6;
+            font-size: 1rem;
+            background: white;
+            transition: border-color 0.2s;
+            font-family: sans-serif;
+        }
+        .field-group select:focus,
+        .field-group input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        #select-turma { width: 160px; }
+        #select-aluno { width: 420px; }
+        #input-numero { width: 80px; background: #f0f4ff; color: #1a2a6c; font-weight: bold; cursor: default; }
+        .spinner {
+            display: inline-block;
+            width: 15px; height: 15px;
+            border: 3px solid #aab0d6;
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            vertical-align: middle;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        #loading-msg {
+            font-size: 0.85rem;
+            color: #555;
+            margin-top: 10px;
+            min-height: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .intro-text {
+            background: #f1f3f5;
+            padding: 20px;
+            border-left: 5px solid var(--primary-color);
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+        .question {
+            margin-bottom: 60px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .question-header {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            display: block;
+        }
+        .context-box {
+            background: #fff9db;
+            padding: 20px;
+            border: 1px solid #ffe066;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-family: sans-serif;
+            font-size: 0.9rem;
+        }
+        .data-table th, .data-table td {
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            text-align: center;
+        }
+        .data-table th { background-color: var(--primary-color); color: white; }
+        .data-table tr:nth-child(even) { background-color: #f8f9fa; }
+        .question-image {
+            display: block;
+            max-width: 80%;
+            height: auto;
+            margin: 25px auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background: white;
+            border-radius: 4px;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .option {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 15px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: sans-serif;
+        }
+        .option:hover { background: #e7f5ff; border-color: #74c0fc; }
+        .option input { margin-top: 5px; transform: scale(1.2); }
+        .btn-submit {
+            display: block;
+            width: 100%;
+            padding: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 40px;
+            transition: background 0.3s;
+            text-transform: uppercase;
+        }
+        .btn-submit:hover    { background-color: #0d1a4a; }
+        .btn-submit:disabled { background-color: #aaa; cursor: not-allowed; }
+        #result {
+            margin-top: 40px;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            display: none;
+            font-family: sans-serif;
+        }
+        .success { background-color: #d3f9d8; color: #2b8a3e; border: 2px solid #51cf66; }
+        .error   { background-color: #fff5f5; color: #c92a2a; border: 2px solid #ff8787; }
+        #sheets-status {
+            margin-top: 15px;
+            padding: 12px 16px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            display: none;
+            font-family: sans-serif;
+        }
+        .sending  { background:#e7f5ff; color:#1864ab; border:1px solid #74c0fc; }
+        .sent     { background:#d3f9d8; color:#2b8a3e; border:1px solid #51cf66; }
+        .send-err { background:#fff5f5; color:#c92a2a; border:1px solid #ff8787; }
+        @media print {
+            .btn-submit, #config-alert { display: none; }
+            .container { box-shadow: none; padding: 20px; }
+            body { background: white; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- CABEÇALHO -->
+    <header>
+        <h1>E.E. PROFª WANDA MASCAGNI DE SA</h1>
+        <h2>(ATIVIDADE DE CIÊNCIAS) 1º BIMESTRE</h2>
+    </header>
+
+    <!-- PAINEL DO ALUNO -->
+    <div class="student-panel">
+        <h3>👤 Identificação do Estudante</h3>
+        <div class="fields-row">
+            <div class="field-group">
+                <label for="select-turma">Turma</label>
+                <select id="select-turma" onchange="carregarAlunos()">
+                    <option value="">— Selecione —</option>
+                    <option value="9A">9º A</option>
+                    <option value="9B">9º B</option>
+                </select>
+            </div>
+            <div class="field-group">
+                <label for="select-aluno">Nome do Estudante</label>
+                <select id="select-aluno" disabled onchange="preencherNumero()">
+                    <option value="">— selecione a turma primeiro —</option>
+                </select>
+            </div>
+            <div class="field-group">
+                <label for="input-numero">Nº</label>
+                <input type="text" id="input-numero" readonly placeholder="—" />
+            </div>
+        </div>
+        <div id="loading-msg"></div>
+    </div>
+
+    <!-- INTRO -->
+    <div class="intro-text">
+        Esta atividade exige leitura atenta e análise de dados. A ciência não é apenas um conjunto de fatos, mas uma forma de investigar o mundo baseada em evidências, ética e colaboração. Leia os textos de apoio e analise os gráficos/tabelas antes de responder.
+    </div>
+
+    <!-- QUESTÕES -->
+    <form id="quiz-form">
+
+        <div class="question">
+            <span class="question-header">QUESTÃO 01 — A NATUREZA DA PROVA CIENTÍFICA</span>
+            <div class="context-box">
+                "Se eu afirmo que há um dragão na minha garagem, mas ele é invisível, incorpóreo e flutua, e eu invalido cada teste que você propõe (como jogar farinha no chão ou usar sensores térmicos), minha afirmação deixa de ser científica. Na ciência, uma hipótese deve ser <strong>falseável</strong>, ou seja, deve ser possível imaginar um experimento que prove que ela está errada." (Adaptado de Carl Sagan)
+            </div>
+            <img src="images/dragao_garagem.jpg" alt="Ilustração do Dragão" class="question-image">
+            <p>Com base no texto e no conceito de <strong>falseabilidade</strong>, por que a ciência rejeita a hipótese do dragão invisível?</p>
+            <div class="options">
+                <label class="option"><input type="radio" name="q1" value="a"> a) Porque a ciência só acredita naquilo que pode ser visto a olho nu, sem o uso de aparelhos.</label>
+                <label class="option"><input type="radio" name="q1" value="b"> b) Porque o dono da garagem não possui autoridade acadêmica para fazer tal afirmação.</label>
+                <label class="option"><input type="radio" name="q1" value="c"> c) Porque a hipótese foi construída de forma a evitar qualquer teste que pudesse refutá-la, tornando-a dogmática.</label>
+                <label class="option"><input type="radio" name="q1" value="d"> d) Porque dragões são seres mitológicos e a ciência não estuda literatura ou folclore.</label>
+            </div>
+        </div>
+
+        <div class="question">
+            <span class="question-header">QUESTÃO 02 — CIÊNCIA BRASILEIRA E AGILIDADE</span>
+            <div class="context-box">
+                Em 2020, a equipe liderada pela Dra. Jaqueline Goes de Jesus sequenciou o genoma do SARS-CoV-2 em tempo recorde. Analise o gráfico abaixo que compara o tempo de resposta de diferentes centros de pesquisa no início da pandemia.
+            </div>
+            <img src="images/grafico_genoma.png" alt="Gráfico de Tempo de Sequenciamento" class="question-image">
+            <p>A análise do gráfico permite concluir que a equipe brasileira:</p>
+            <div class="options">
+                <label class="option"><input type="radio" name="q2" value="a"> a) Foi 50% mais lenta que a equipe dos EUA devido à falta de recursos tecnológicos.</label>
+                <label class="option"><input type="radio" name="q2" value="b"> b) Demonstrou alta eficiência técnica, reduzindo o tempo de resposta pela metade em relação aos EUA e em mais de 60% em relação ao Reino Unido.</label>
+                <label class="option"><input type="radio" name="q2" value="c"> c) Só conseguiu o resultado porque o vírus que chegou ao Brasil era mais simples de sequenciar.</label>
+                <label class="option"><input type="radio" name="q2" value="d"> d) Levou o mesmo tempo que os outros países, mostrando que a ciência é igual em todo lugar.</label>
+            </div>
+        </div>
+
+        <div class="question">
+            <span class="question-header">QUESTÃO 03 — IMPACTO SOCIAL DA CIÊNCIA</span>
+            <div class="context-box">
+                A vacinação é uma das maiores conquistas da ciência. Analise a relação entre a cobertura vacinal (porcentagem da população vacinada) e o número de hospitalizações graves ao longo de um semestre.
+            </div>
+            <img src="images/grafico_vacina.png" alt="Gráfico Vacinação vs Hospitalização" class="question-image">
+            <p>Interpretando o gráfico de duplo eixo, qual é a correlação observada entre as duas variáveis?</p>
+            <div class="options">
+                <label class="option"><input type="radio" name="q3" value="a"> a) Conforme a cobertura vacinal aumenta, o número de hospitalizações também aumenta, mostrando ineficácia.</label>
+                <label class="option"><input type="radio" name="q3" value="b"> b) Não há relação clara entre as variáveis, pois as curvas se cruzam de forma aleatória.</label>
+                <label class="option"><input type="radio" name="q3" value="c"> c) Existe uma correlação inversamente proporcional: o aumento da cobertura vacinal está associado a uma queda drástica nas hospitalizações.</label>
+                <label class="option"><input type="radio" name="q3" value="d"> d) As hospitalizações caíram apenas por causa do isolamento social, sem influência da vacina.</label>
+            </div>
+        </div>
+
+        <div class="question">
+            <span class="question-header">QUESTÃO 04 — ÉTICA E USO DO CONHECIMENTO</span>
+            <div class="context-box">
+                O currículo destaca que a ciência não é neutra. Analise a tabela abaixo sobre o uso de tecnologias nucleares em diferentes contextos históricos.
+            </div>
+            <table class="data-table">
+                <thead><tr><th>Aplicação</th><th>Objetivo Principal</th><th>Impacto Social</th></tr></thead>
+                <tbody>
+                    <tr><td>Bomba Atômica (1945)</td><td>Destruição militar</td><td>Milhares de mortes e danos ambientais</td></tr>
+                    <tr><td>Medicina Nuclear</td><td>Diagnóstico e tratamento (Câncer)</td><td>Aumento da expectativa de vida</td></tr>
+                    <tr><td>Energia Nuclear</td><td>Geração de eletricidade</td><td>Baixa emissão de CO2, mas risco de acidentes</td></tr>
+                </tbody>
+            </table>
+            <p>Com base na tabela, a afirmação "a ciência não é neutra" significa que:</p>
+            <div class="options">
+                <label class="option"><input type="radio" name="q4" value="a"> a) O conhecimento científico é perigoso por natureza e deve ser evitado.</label>
+                <label class="option"><input type="radio" name="q4" value="b"> b) A ciência só serve para criar armas de guerra, como mostra o exemplo de 1945.</label>
+                <label class="option"><input type="radio" name="q4" value="c"> c) O mesmo conhecimento (física nuclear) pode ter impactos opostos dependendo dos valores e interesses de quem o aplica.</label>
+                <label class="option"><input type="radio" name="q4" value="d"> d) A medicina nuclear é a única aplicação ética permitida para a ciência atual.</label>
+            </div>
+        </div>
+
+        <div class="question">
+            <span class="question-header">QUESTÃO 05 — DESINFORMAÇÃO NAS REDES</span>
+            <div class="context-box">
+                A desinformação científica (fake news) é um desafio para a saúde pública. Analise o gráfico de pizza sobre os principais canais onde os estudantes relatam encontrar informações falsas sobre ciência.
+            </div>
+            <img src="images/grafico_desinformacao.png" alt="Gráfico de Canais de Desinformação" class="question-image">
+            <p>De acordo com os dados apresentados, qual estratégia seria mais eficaz para combater a desinformação científica?</p>
+            <div class="options">
+                <label class="option"><input type="radio" name="q5" value="a"> a) Focar exclusivamente em jornais impressos, pois são a maior fonte de mentiras.</label>
+                <label class="option"><input type="radio" name="q5" value="b"> b) Criar campanhas de educação midiática e divulgação científica focadas em Redes Sociais e Apps de Mensagem, que somam 80% da propagação.</label>
+                <label class="option"><input type="radio" name="q5" value="c"> c) Proibir o uso de internet para pesquisas escolares, voltando apenas aos livros físicos.</label>
+                <label class="option"><input type="radio" name="q5" value="d"> d) Ignorar o "Boca a Boca", pois 5% é um valor insignificante para a ciência.</label>
+            </div>
+        </div>
+
+        <div class="question">
+            <span class="question-header">QUESTÃO 06 — O RIGOR DO MÉTODO</span>
+            <div class="context-box">
+                Um cientista observa que certas plantas crescem mais rápido quando expostas a música clássica. Ele elabora a seguinte frase: "A música clássica estimula o metabolismo celular das plantas".
+            </div>
+            <img src="images/metodo_cientifico.png" alt="Etapas do Método" class="question-image">
+            <p>No contexto do método científico, a frase elaborada pelo cientista representa qual etapa?</p>
+            <div class="options">
+                <label class="option"><input type="radio" name="q6" value="a"> a) Conclusão, pois ele já afirmou o que acontece com a planta.</label>
+                <label class="option"><input type="radio" name="q6" value="b"> b) Hipótese, pois é uma explicação provisória que ainda precisa ser testada experimentalmente.</label>
+                <label class="option"><input type="radio" name="q6" value="c"> c) Observação, pois ele apenas descreveu o que viu sem pensar no porquê.</label>
+                <label class="option"><input type="radio" name="q6" value="d"> d) Resultado, pois é o dado final obtido após anos de pesquisa.</label>
+            </div>
+        </div>
+
+        <div class="question">
+            <span class="question-header">QUESTÃO 07 — CURADORIA DE INFORMAÇÃO</span>
+            <div class="context-box">
+                Para decidir se uma informação é confiável, devemos analisar critérios específicos. Veja a tabela de comparação entre dois sites que falam sobre "Vacinas e Autismo".
+            </div>
+            <table class="data-table">
+                <thead><tr><th>Critério</th><th>Site A (Blog Pessoal)</th><th>Site B (Portal Fiocruz)</th></tr></thead>
+                <tbody>
+                    <tr><td>Autor</td><td>"Anônimo" ou "Mãe Preocupada"</td><td>Corpo de pesquisadores e médicos</td></tr>
+                    <tr><td>Referências</td><td>Relatos de vizinhos e vídeos do YouTube</td><td>Artigos científicos revisados por pares</td></tr>
+                    <tr><td>Linguagem</td><td>Sensacionalista ("O que não te contam!")</td><td>Técnica, objetiva e baseada em dados</td></tr>
+                </tbody>
+            </table>
+            <p>Ao realizar uma pesquisa escolar, qual site deve ser priorizado e por quê?</p>
+            <div class="options">
+                <label class="option"><input type="radio" name="q7" value="a"> a) Site A, porque relatos pessoais são mais emocionantes e verdadeiros que dados frios.</label>
+                <label class="option"><input type="radio" name="q7" value="b"> b) Site B, porque possui autoridade institucional, referências verificáveis e rigor na linguagem.</label>
+                <label class="option"><input type="radio" name="q7" value="c"> c) Ambos têm o mesmo valor, pois na internet todas as opiniões são válidas.</label>
+                <label class="option"><input type="radio" name="q7" value="d"> d) Nenhum dos dois, pois a ciência muda o tempo todo e nada é confiável.</label>
+            </div>
+        </div>
+
+        <div class="question">
+            <span class="question-header">QUESTÃO 08 — CIÊNCIA COMO ESFORÇO COLETIVO</span>
+            <div class="context-box">
+                O currículo menciona o experimento de cientistas brasileiras que enviaram "minicérebros" para a Estação Espacial Internacional (ISS). Esse projeto envolveu universidades brasileiras, a NASA e agências espaciais europeias.
+            </div>
+            <img src="images/divulgacao_cientifica.png" alt="Colaboração" class="question-image">
+            <p>Esse exemplo reforça qual característica fundamental da ciência moderna?</p>
+            <div class="options">
+                <label class="option"><input type="radio" name="q8" value="a"> a) A ciência é uma competição onde apenas um país pode descobrir a verdade.</label>
+                <label class="option"><input type="radio" name="q8" value="b"> b) O trabalho científico é solitário e depende apenas da inteligência de um único gênio.</label>
+                <label class="option"><input type="radio" name="q8" value="c"> c) A produção do conhecimento é uma prática colaborativa e transnacional, unindo esforços para objetivos comuns.</label>
+                <label class="option"><input type="radio" name="q8" value="d"> d) Cientistas brasileiros só conseguem trabalhar se forem para outros países.</label>
+            </div>
+        </div>
+
+        <div class="question">
+            <span class="question-header">QUESTÃO 09 — O FILTRO DA CIÊNCIA</span>
+            <div class="context-box">
+                Antes de um estudo ser publicado em uma revista científica importante (como a <em>Nature</em> ou <em>Science</em>), ele passa pela "Revisão por Pares" (Peer Review). Outros cientistas da mesma área, que não participaram da pesquisa, analisam os métodos e os cálculos para encontrar erros.
+            </div>
+            <img src="images/vacina_etapas.png" alt="Etapas de Validação" class="question-image">
+            <p>Qual é a principal função desse processo de revisão?</p>
+            <div class="options">
+                <label class="option"><input type="radio" name="q9" value="a"> a) Impedir que novos cientistas fiquem famosos rapidamente.</label>
+                <label class="option"><input type="radio" name="q9" value="b"> b) Garantir que apenas ideias que o governo aprova sejam publicadas.</label>
+                <label class="option"><input type="radio" name="q9" value="c"> c) Atuar como um controle de qualidade, aumentando a confiabilidade e a precisão do conhecimento gerado.</label>
+                <label class="option"><input type="radio" name="q9" value="d"> d) Cobrar taxas caras dos cientistas para que eles possam mostrar seu trabalho.</label>
+            </div>
+        </div>
+
+        <div class="question">
+            <span class="question-header">QUESTÃO 10 — CIÊNCIA E CIDADANIA</span>
+            <div class="context-box">
+                "Saber ciência não serve apenas para passar na prova, mas para tomar decisões na vida real: escolher um alimento mais saudável, entender um diagnóstico médico ou votar em políticas ambientais."
+            </div>
+            <img src="images/jaqueline_goes.png" alt="Cidadania" class="question-image">
+            <p>Com base em tudo o que foi estudado, como o pensamento científico auxilia no exercício da cidadania?</p>
+            <div class="options">
+                <label class="option"><input type="radio" name="q10" value="a"> a) Fazendo com que as pessoas aceitem tudo o que os especialistas dizem sem questionar.</label>
+                <label class="option"><input type="radio" name="q10" value="b"> b) Desenvolvendo uma postura crítica que valoriza evidências e o ceticismo saudável diante de afirmações sem provas.</label>
+                <label class="option"><input type="radio" name="q10" value="c"> c) Ensinando a decorar fórmulas para resolver problemas matemáticos complexos.</label>
+                <label class="option"><input type="radio" name="q10" value="d"> d) Mostrando que a tecnologia pode resolver todos os problemas do mundo sem esforço humano.</label>
+            </div>
+        </div>
+
+        <button type="button" class="btn-submit" id="btn-submit" onclick="calcularNota()">
+            ✅ Finalizar e Registrar Nota
+        </button>
+    </form>
+
+    <div id="result"></div>
+    <div id="sheets-status"></div>
+
+</div>
+
+<script>
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxFAe4Avt4w5CV2fwyrAdhM61Bo1qCXJ7VUg13MXljq13jUpCbY-_Gs-Ecnc7EekPU/exec';
+
+const GABARITO = { q1:'c', q2:'b', q3:'c', q4:'c', q5:'b',
+                   q6:'b', q7:'b', q8:'c', q9:'c', q10:'b' };
+
+// Cache: evita buscar a mesma turma duas vezes
+const cacheAlunos = {};
+
+// ── JSONP helper: faz GET sem bloqueio de CORS ───────────────
+function jsonp(url) {
+    return new Promise((resolve, reject) => {
+        const cbName = '_cb_' + Math.random().toString(36).slice(2);
+        const script = document.createElement('script');
+        const timer  = setTimeout(() => {
+            cleanup();
+            reject(new Error('Timeout — verifique se o Web App está publicado como "Qualquer pessoa".'));
+        }, 15000);
+
+        window[cbName] = (data) => { cleanup(); resolve(data); };
+
+        function cleanup() {
+            clearTimeout(timer);
+            delete window[cbName];
+            if (script.parentNode) script.parentNode.removeChild(script);
+        }
+
+        script.onerror = () => { cleanup(); reject(new Error('Falha ao carregar script — URL inválida ou sem acesso.')); };
+        script.src = url + (url.includes('?') ? '&' : '?') + 'callback=' + cbName;
+        document.head.appendChild(script);
+    });
+}
+
+// ── 1. Ao trocar a turma, busca alunos via JSONP ─────────────
+async function carregarAlunos() {
+    const turma    = document.getElementById('select-turma').value;
+    const selAluno = document.getElementById('select-aluno');
+    const inputNum = document.getElementById('input-numero');
+    const loadMsg  = document.getElementById('loading-msg');
+
+    selAluno.innerHTML = '<option value="">— aguarde —</option>';
+    selAluno.disabled  = true;
+    inputNum.value     = '';
+    loadMsg.innerHTML  = '';
+
+    if (!turma) {
+        selAluno.innerHTML = '<option value="">— selecione a turma primeiro —</option>';
+        return;
+    }
+
+    if (cacheAlunos[turma]) {
+        preencherSelect(cacheAlunos[turma]);
+        loadMsg.innerHTML = `✅ ${cacheAlunos[turma].length} alunos carregados.`;
+        return;
+    }
+
+    loadMsg.innerHTML = '<span class="spinner"></span> Carregando lista da turma…';
+
+    try {
+        const url  = `${APPS_SCRIPT_URL}?action=alunos&turma=${encodeURIComponent(turma)}`;
+        const data = await jsonp(url);
+
+        if (data.erro) throw new Error(data.erro);
+
+        const alunos = data.alunos || [];
+        cacheAlunos[turma] = alunos;
+        preencherSelect(alunos);
+        loadMsg.innerHTML = `✅ ${alunos.length} alunos carregados.`;
+
+    } catch (e) {
+        selAluno.innerHTML = '<option value="">— erro ao carregar —</option>';
+        loadMsg.innerHTML  = `❌ Erro: ${e.message}`;
+        console.error('carregarAlunos:', e);
+    }
+}
+
+// ── 2. Popula o dropdown com os nomes (Nº. Nome) ────────────
+function preencherSelect(alunos) {
+    const sel = document.getElementById('select-aluno');
+    sel.innerHTML = '<option value="">— Selecione seu nome —</option>';
+    alunos.forEach((a, idx) => {
+        const opt = document.createElement('option');
+        opt.value = idx;
+        const prefixo = a.numero ? `${a.numero}. ` : '';
+        opt.textContent = `${prefixo}${a.nome}`;
+        sel.appendChild(opt);
+    });
+    sel.disabled = false;
+}
+
+// ── 3. Preenche o campo Nº ao selecionar aluno ──────────────
+function preencherNumero() {
+    const turma = document.getElementById('select-turma').value;
+    const idx   = document.getElementById('select-aluno').value;
+
+    if (idx === '' || !turma || !cacheAlunos[turma]) {
+        document.getElementById('input-numero').value = '';
+        return;
+    }
+    const aluno = cacheAlunos[turma][parseInt(idx)];
+    document.getElementById('input-numero').value = aluno?.numero ?? '';
+}
+
+// ── 4. Calcula nota e grava na planilha (coluna X) ───────────
+async function calcularNota() {
+    const turma = document.getElementById('select-turma').value;
+    const idx   = document.getElementById('select-aluno').value;
+
+    if (!turma || idx === '') {
+        alert('⚠️ Selecione a Turma e o seu Nome antes de finalizar.');
+        return;
+    }
+
+    const aluno = cacheAlunos[turma]?.[parseInt(idx)];
+    if (!aluno) { alert('Aluno não encontrado. Recarregue a página.'); return; }
+
+    // Pontua
+    const formData = new FormData(document.getElementById('quiz-form'));
+    let score = 0;
+    for (const key in GABARITO) {
+        if (formData.get(key) === GABARITO[key]) score++;
+    }
+
+    // Exibe resultado
+    const resultDiv = document.getElementById('result');
+    resultDiv.style.display = 'block';
+    let feedback = '';
+    const nomeLabel = aluno.nome;
+    if (score >= 9) {
+        resultDiv.className = 'success';
+        feedback = `Excelente, ${nomeLabel}! Você demonstrou altíssimo nível de análise crítica e interpretação de dados.`;
+    } else if (score >= 7) {
+        resultDiv.className = 'success';
+        feedback = `Bom trabalho, ${nomeLabel}! Você compreende bem os conceitos, mas preste mais atenção aos detalhes dos gráficos.`;
+    } else {
+        resultDiv.className = 'error';
+        feedback = `Atenção, ${nomeLabel}. Releia os textos de apoio e analise as tabelas com mais calma. A ciência exige paciência e observação.`;
+    }
+
+    resultDiv.innerHTML = `
+        <h3>RESULTADO FINAL</h3>
+        <p><strong>Estudante:</strong> ${aluno.nome}</p>
+        <p><strong>Turma:</strong> ${turma === '9A' ? '9º A' : '9º B'}
+           &nbsp;|&nbsp; <strong>Nº:</strong> ${aluno.numero || '—'}</p>
+        <p><strong>Acertos:</strong> ${score} de 10
+           &nbsp;|&nbsp; <strong>Nota:</strong> ${score}</p>
+        <p>${feedback}</p>
+    `;
+
+    document.getElementById('btn-submit').disabled = true;
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+
+    // Grava nota na planilha via JSONP (GET com action=gravar)
+    setSheetsStatus('sending', '⏳ Registrando nota na planilha…');
+
+    try {
+        const url  = `${APPS_SCRIPT_URL}?action=gravar&turma=${encodeURIComponent(turma)}&linha=${aluno.linha}&nota=${score}`;
+        const data = await jsonp(url);
+
+        if (data.erro) throw new Error(data.erro);
+
+        setSheetsStatus('sent',
+            `✅ Nota ${score} registrada com sucesso para ${aluno.nome} `
+          + `(${turma === '9A' ? '9º A' : '9º B'}, linha ${aluno.linha}, coluna X).`
+        );
+    } catch (e) {
+        setSheetsStatus('send-err',
+            `❌ Nota calculada (${score}), mas não foi possível salvar automaticamente: ${e.message}. `
+          + `Anote a nota e registre manualmente se necessário.`
+        );
+        console.error('calcularNota (gravar):', e);
+    }
+}
+
+function setSheetsStatus(cls, msg) {
+    const el = document.getElementById('sheets-status');
+    el.style.display = 'block';
+    el.className = cls;
+    el.textContent = msg;
+}
+</script>
+</body>
+</html>
